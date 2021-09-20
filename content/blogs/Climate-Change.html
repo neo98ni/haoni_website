@@ -1,0 +1,296 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T22:42:51-05:00"
+description: 
+draft: false
+image: pic04.jpg
+keywords: ""
+slug: ipsum
+title: Climate change and temperature anomalies 
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="loading-the-data" class="section level2">
+<h2>Loading the data</h2>
+<pre class="r"><code>weather &lt;- 
+  read_csv(&quot;https://data.giss.nasa.gov/gistemp/tabledata_v4/NH.Ts+dSST.csv&quot;, 
+           skip = 1, 
+           na = &quot;***&quot;)</code></pre>
+<pre><code>## Rows: 142 Columns: 19</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl (19): Year, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec, ...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="tidying-the-data-using-select-and-pivot_longer" class="section level2">
+<h2>Tidying the data using select() and pivot_longer()</h2>
+<pre class="r"><code>tidyweather &lt;- weather %&gt;%
+  select(1:13) %&gt;% #Selecting Year and month variables
+  pivot_longer(cols=2:13, names_to=&#39;month&#39;, values_to=&#39;delta&#39;) #Tidying the data from wide to long format so that we have a column for the months and the corresponding temperature data respectively</code></pre>
+<div id="checking-for-year-month-and-delta-columns-in-the-tidyweather-dataframe" class="section level3">
+<h3>Checking for year, month, and delta columns in the tidyweather dataframe</h3>
+<pre class="r"><code>skim(tidyweather)</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-1">Table 1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">tidyweather</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">1704</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">3</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">month</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">12</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Year</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1950.50</td>
+<td align="right">41.00</td>
+<td align="right">1880.00</td>
+<td align="right">1915.00</td>
+<td align="right">1950.50</td>
+<td align="right">1986.00</td>
+<td align="right">2021.00</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">delta</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">0.08</td>
+<td align="right">0.47</td>
+<td align="right">-1.52</td>
+<td align="right">-0.24</td>
+<td align="right">-0.01</td>
+<td align="right">0.31</td>
+<td align="right">1.94</td>
+<td align="left">▁▆▇▂▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="plotting-information" class="section level2">
+<h2>Plotting Information</h2>
+<pre class="r"><code>#Creating date variables for the tidyweather dataset
+tidyweather &lt;- tidyweather %&gt;% 
+  mutate(date = ymd(paste(as.character(Year), month, &quot;1&quot;)), #Creating a column called date 
+         month = month(date, label=TRUE), #Converting month column into an ordered date factor
+         year = year(date)) #Converting the Year column into an ordered date factor
+
+#Plotting temperature by date
+ggplot(tidyweather, aes(x=date, y = delta))+  #Plotting delta by date
+  geom_point()+ #Scatterplot
+  geom_smooth(color=&quot;red&quot;) + #Adding a red trend line
+  theme_bw() + #theme
+  labs (#Adding a labels
+    title = &quot;Weather Anomalies&quot;,
+    x = &quot;Date&quot;,
+    y = &quot;Delta&quot;
+  ) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<pre><code>## Warning: Removed 4 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_point).</code></pre>
+<p><img src="/blogs/Climate-Change_files/figure-html/scatter_plot-1.png" width="672" /></p>
+<div id="scatterplot-for-each-month-using-facet_wrap" class="section level3">
+<h3>Scatterplot for each month using facet_wrap()</h3>
+<pre class="r"><code>tidyweather %&gt;%
+  ggplot(aes(x=Year, y=delta)) + #Plotting delta by Year
+  geom_point() + #Scatterplot
+  geom_smooth(color=&quot;red&quot;) + #Adding a red trend line
+  theme_bw() + #theme
+  facet_wrap(~month) + #Creating separate graphs for each month
+  labs (#Adding a labels
+    title = &quot;Weather Anomalies per Month&quot;,
+    x = &quot;Year&quot;,
+    y = &quot;Delta&quot;
+  ) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 4 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_point).</code></pre>
+<p><img src="/blogs/Climate-Change_files/figure-html/facet_wrap-1.png" width="672" /></p>
+<blockquote>
+<p>Answer below</p>
+</blockquote>
+<p>Although all of the graphs in the grid have a similar upwards trend, there are subtle differences in variability between months such as December/January and June/July. January is a month with much higher variability in weather while June does not. This is something that may be worth looking into for meteorologists.</p>
+</div>
+<div id="creating-an-interval-column-for-1881-1920-1921-1950-1951-1980-1981-2010" class="section level3">
+<h3>Creating an interval column for 1881-1920, 1921-1950, 1951-1980, 1981-2010</h3>
+<pre class="r"><code>comparison &lt;- tidyweather %&gt;% #New data frame called comparison
+  filter(Year&gt;= 1881) %&gt;%     #remove years prior to 1881
+  #create new variable &#39;interval&#39;, and assign values based on criteria below:
+  mutate(interval = case_when(
+    Year %in% c(1881:1920) ~ &quot;1881-1920&quot;,
+    Year %in% c(1921:1950) ~ &quot;1921-1950&quot;,
+    Year %in% c(1951:1980) ~ &quot;1951-1980&quot;,
+    Year %in% c(1981:2010) ~ &quot;1981-2010&quot;,
+    TRUE ~ &quot;2011-present&quot;
+  ))</code></pre>
+</div>
+<div id="density-plot-to-study-the-distribution-of-monthly-deviations-delta-grouped-by-intervals-we-are-interested-in" class="section level3">
+<h3>Density plot to study the distribution of monthly deviations (<code>delta</code>), grouped by intervals we are interested in</h3>
+<pre class="r"><code>ggplot(comparison, aes(x=delta, fill=interval)) +
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_bw() +                #theme
+  labs (
+    title = &quot;Density Plot for Monthly Temperature Anomalies&quot;,
+    y     = &quot;Density&quot;         #changing y-axis label to sentence case
+  )</code></pre>
+<pre><code>## Warning: Removed 4 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="/blogs/Climate-Change_files/figure-html/density_plot-1.png" width="672" /></p>
+</div>
+<div id="average-annual-anomalies" class="section level3">
+<h3>Average annual anomalies</h3>
+<pre class="r"><code>average_annual_anomaly &lt;- tidyweather %&gt;%
+  filter(!is.na(delta)) %&gt;% #Removing rows with NA&#39;s in the delta column 
+  group_by(Year) %&gt;% 
+  summarise(
+    annual_average_delta=mean(delta)) #New column annual_average_delta to calculate the mean delta by year 
+
+ggplot(average_annual_anomaly, aes(x=Year, y=annual_average_delta))+
+  geom_point() + #Scatterplot of annual_average_delta over the years
+  geom_smooth() + #Trend line
+  theme_bw() + #Theme
+  labs (
+    title = &quot;Average Yearly Anomaly&quot;, #Title 
+    y     = &quot;Average Annual Delta&quot; #y-axis label
+  ) +
+  NULL</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/blogs/Climate-Change_files/figure-html/averaging-1.png" width="672" /></p>
+</div>
+</div>
+<div id="confidence-interval-for-delta" class="section level2">
+<h2>Confidence Interval for <code>delta</code></h2>
+<p><a href="https://earthobservatory.nasa.gov/world-of-change/decadaltemp.php">NASA points out on their website</a> that</p>
+<blockquote>
+<p>A one-degree global change is significant because it takes a vast amount of heat to warm all the oceans, atmosphere, and land by that much. In the past, a one- to two-degree drop was all it took to plunge the Earth into the Little Ice Age.</p>
+</blockquote>
+<p>Your task is to construct a confidence interval for the average annual delta since 2011, both using a formula and using a bootstrap simulation with the <code>infer</code> package. Recall that the dataframe <code>comparison</code> has already grouped temperature anomalies according to time intervals; we are only interested in what is happening between 2011-present.</p>
+<div id="confidence-interval-for-the-average-annual-delta-since-2011" class="section level3">
+<h3>Confidence interval for the average annual delta since 2011</h3>
+<pre class="r"><code>formula_ci &lt;- comparison %&gt;% 
+  group_by(interval) %&gt;%
+  # calculate mean, SD, count, SE, lower/upper 95% CI
+  summarise(
+    mean=mean(delta, na.rm=T), #mean
+    sd=sd(delta, na.rm=T), #standard deviation 
+    count=n(), #number of datapoints
+    se=sd/sqrt(count), #standard error
+    t_critical=qt(0.975, count-1), #t-critical using quantile function
+    lower=mean-t_critical*se, #lower end of CI
+    upper=mean+t_critical*se) %&gt;% #upper end of CI
+  # choose the interval 2011-present
+  filter(interval == &#39;2011-present&#39;)
+
+formula_ci</code></pre>
+<pre><code>## # A tibble: 1 × 8
+##   interval      mean    sd count     se t_critical lower upper
+##   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 2011-present  1.06 0.274   132 0.0239       1.98  1.01  1.11</code></pre>
+</div>
+<div id="bootstrap-simulation" class="section level3">
+<h3>Bootstrap Simulation</h3>
+<pre class="r"><code>boot_ci &lt;- comparison %&gt;%
+  group_by(interval) %&gt;%
+  filter(interval == &#39;2011-present&#39;) %&gt;%
+  specify(response=delta) %&gt;% #Setting delta as the response variable 
+  generate(reps=1000, type=&#39;bootstrap&#39;) %&gt;% #Repeating 1000 reps 
+  calculate(stat=&#39;mean&#39;) %&gt;% #Calculating mean 
+  get_confidence_interval(level=0.95, type=&#39;percentile&#39;) #Calculating confidence interval</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values.</code></pre>
+<pre class="r"><code>boot_ci</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   lower_ci upper_ci
+##      &lt;dbl&gt;    &lt;dbl&gt;
+## 1     1.01     1.11</code></pre>
+<blockquote>
+<p>Answer below</p>
+</blockquote>
+<p>We construct a 95% confidence interval both using the formula and a bootstrap simulation. The result shows that the true mean lies within the interval calculated with 95% confidence. The fact that this confidence interval does not contain zero shows that the difference between the means is statistically significant. Hence, using our result, we can conclude that the increase in temprature is statistically significant and that global warming is progressing.</p>
+</div>
+</div>

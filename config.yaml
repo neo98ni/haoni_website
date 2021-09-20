@@ -75,43 +75,38 @@ params:
       - name: Elements
         url: elements.html
     menu: Menu
-    subtitle: By HTML5 Up
-    title: Forty
+    subtitle: 
+    title: Hao
   tiles:
     enable: yes
     showcase:
-      - image: pic01.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Aliquam
-        url: blogs/haoni
-      - image: pic02.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Tempus
+      - image: basketball.jpeg
+        subtitle: My experiences
+        title: About me
+        url: blogs/aliquam
+      - image: world.jpeg
+        subtitle: 1st Pre-Assignment
+        title: Country Comparison
         url: blogs/tempus
-      - image: pic03.jpg
-        subtitle: Lorem Etiam Nullam
-        title: Magna
+      - image: drink.jpeg
+        subtitle: Assignment 1
+        title: Drink Consumption
         url: blogs/magna
-      - image: pic04.jpg
-        subtitle: Nisl Sed Aliquam
-        title: Ipsum
+      - image: climate.jpeg
+        subtitle: Assignment 2a
+        title: Climate change and temperature anomalies 
         url: blogs/ipsum
-      - image: pic05.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Consequat
-        url: blogs/ipsum
-      - image: pic06.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Etiam
-        url: blogs/ipsum
+      - image: biden.jpeg
+        subtitle: Assignment 2b
+        title: Biden’s Approval Margins
+        url: blogs/consequat
+      - image: tfl.jpeg
+        subtitle: Assignment 2 Challenge
+        title: Excess rentals in TfL bike sharing
+        url: blogs/etiam
   two:
     buttonText: Get Started
     enable: yes
-    subtitle: "Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero.
-      \n    Mauris aliquet magna magna sed nunc rhoncus pharetra. \n    Pellentesque
-      condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia
-      pellentesque lorem ipsum dolor. \n    Nullam et orci eu lorem consequat tincidunt.
-      Vivamus et sagittis libero.\n    Mauris aliquet magna magna sed nunc rhoncus
-      amet pharetra et feugiat tempus."
-    title: Massa libero
+    subtitle: "Find out more my details"
+    title: Learn more about me
     url: blogs
