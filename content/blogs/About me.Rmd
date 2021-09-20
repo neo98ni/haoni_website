@@ -5,7 +5,7 @@ categories:
 date: "2017-10-31T22:42:51-05:00"
 description: 
 draft: false
-image: pic02.jpg
+image: cv.jpeg
 keywords: ""
 slug: aliquam
 title: About me
@@ -20,3 +20,7 @@ I once studied abroad in London, and it was one of the best times in my life. Th
 Besides studying, I am a huge basketball fan, and I love LeBron James.  I look forward to meeting you on the court!
 
 I wish you had some fun with my website!
+
+![cv image](../../static/img/blogs/cv.jpeg)
+
+
