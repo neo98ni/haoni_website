@@ -104,9 +104,9 @@ params:
         subtitle: Assignment 2 Challenge
         title: Excess rentals in TfL bike sharing
         url: blogs/etiam
-  two:
-    buttonText: Get Started
-    enable: yes
-    subtitle: "Find out more my details"
-    title: Learn more about me
-    url: blogs
+  #two:
+   # buttonText: Get Started
+    #enable: yes
+    #subtitle: "Find out more my details"
+    #title: Learn more about me
+    #url: blogs
